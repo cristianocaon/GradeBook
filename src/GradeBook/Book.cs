@@ -14,11 +14,17 @@ namespace GradeBook
             this.Grades = new List<double>();
         }
 
-        public void AddGrade(double grade)
+        public bool AddGrade(double grade)
         {
             if (grade >= 0 && grade <= 100)
             {
                 this.Grades.Add(grade);
+                return true;
+            }
+            else
+            {
+                System.Console.WriteLine("Invalid value");
+                return false;
             }
         }
 
