@@ -11,7 +11,7 @@ namespace GradeBook
 
             while (true)
             {
-                System.Console.WriteLine("Enter the grades (Press Q to quit): \n");
+                System.Console.Write("Enter the grades (Press Q to quit): ");
 
                 var input = Console.ReadLine();
 
@@ -21,9 +21,24 @@ namespace GradeBook
                     break;
                 }
 
-                var grade = double.Parse(input);
-                book.AddGrade(grade);
-                System.Console.WriteLine($"Grade ({grade}) added to the book!");
+                try
+                {
+                    var grade = double.Parse(input);
+                    book.AddGrade(grade);
+                    System.Console.WriteLine($"Grade ({grade}) added to the book!\n");
+                }
+                catch (ArgumentException ex)
+                {
+                    System.Console.WriteLine(ex.Message);
+                }
+                catch (FormatException ex)
+                {
+                    System.Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    System.Console.WriteLine("Enter another grade");
+                }
             }
 
             var stats = book.GetStats();
