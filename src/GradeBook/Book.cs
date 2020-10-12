@@ -6,7 +6,7 @@ namespace GradeBook
     public class Book
     {
         private List<double> Grades;
-        private string Name;
+        public string Name;
 
         public Book(string name)
         {
