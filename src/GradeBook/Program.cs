@@ -38,7 +38,7 @@ namespace GradeBook
                 {
                     var grade = double.Parse(input);
                     book.AddGrade(grade);
-                    System.Console.WriteLine($"Grade ({grade}) added to the book!\n");
+                    // System.Console.WriteLine($"Grade ({grade}) added to the book!\n");
                 }
                 catch (ArgumentException ex)
                 {
