@@ -1,17 +1,75 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace GradeBook
 {
     public delegate void GradeAddedDelegate(object sender, EventArgs args);
 
-    public class Book
+    public class NamedObject
+    {
+        public NamedObject(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; set; }
+    }
+
+    public interface IBook
+    {
+        void AddGrade(double grade);
+        Stats GetStats();
+        string Name { get; }
+        event GradeAddedDelegate GradeAdded;
+    }
+
+    public abstract class Book : NamedObject, IBook
+    {
+        protected Book(string name) : base(name)
+        {
+        }
+
+        public abstract event GradeAddedDelegate GradeAdded;
+
+        public abstract void AddGrade(double grade);
+
+        public abstract Stats GetStats();
+    }
+
+    public class DiskBook : Book
+    {
+        public DiskBook(string name) : base(name)
+        {
+        }
+
+        public override event GradeAddedDelegate GradeAdded;
+
+        public override void AddGrade(double grade)
+        {
+            using (var writer = File.AppendText($"{this.Name}.txt"))
+            {
+                writer.WriteLine(grade);
+                if (GradeAdded != null)
+                {
+                    GradeAdded(this, new EventArgs());
+                }
+            }
+        }
+
+        public override Stats GetStats()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class InMemoryBook : Book
     {
         private List<double> Grades;
 
-        public string Name { get; set; }
+        // public string Name { get; set; }
 
-        public Book(string name)
+        public InMemoryBook(string name) : base(name)
         {
             this.Name = name;
             this.Grades = new List<double>();
@@ -39,7 +97,7 @@ namespace GradeBook
             }
         }
 
-        public void AddGrade(double grade)
+        public override void AddGrade(double grade)
         {
             if (grade >= 0 && grade <= 100)
             {
@@ -55,9 +113,9 @@ namespace GradeBook
             }
         }
 
-        public event GradeAddedDelegate GradeAdded;
+        public override event GradeAddedDelegate GradeAdded;
 
-        public Stats GetStats()
+        public override Stats GetStats()
         {
             var result = new Stats();
             result.Average = 0.0;
